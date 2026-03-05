@@ -1,5 +1,6 @@
 import pygame
 
+
 class City:
     def __init__(self, city_id, x, y):
         self.id = city_id
