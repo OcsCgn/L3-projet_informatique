@@ -29,6 +29,7 @@ from entities.knight import Knight
 from ui.hud import HUD
 from core.node import Node
 from core.edge import Edge
+from ui.menu import Menu
 
 class Game:
     """
@@ -39,6 +40,8 @@ class Game:
     STATE_PLAYING = "playing"
     STATE_WIN     = "win"
     STATE_LOSE    = "lose"
+    STATE_MENU   = "menu"
+
 
     def __init__(self):
         pygame.init()
@@ -46,6 +49,9 @@ class Game:
         pygame.display.set_caption("⚔ Quête du Graphe — Chevalier & Ombre")
         self.clock = pygame.time.Clock()
 
+        #Définission du menu
+        self.menu = Menu(st.MENU_WIDTH,st.MENU_HEIGTH)
+   
         # Polices
         self.font_title = pygame.font.SysFont(
             "bahnschrift,calibri,arial", 36, bold=True)
@@ -81,7 +87,7 @@ class Game:
             f"Quête : atteindre {self.goal.name} ! "
             f"(coût optimal : {self.optimal_cost})")
 
-        self.state    = self.STATE_PLAYING
+        self.state    = self.STATE_MENU
         self.moves    = 0
         self.hovered  = None   # nœud sous la souris
         self.dynamic_timer = st.DYNAMIC_INTERVAL
@@ -120,7 +126,10 @@ class Game:
                 if event.key == pygame.K_r:
                     self._new_game()
                     return
-
+            if self.state == self.STATE_MENU:
+                action = self.menu.handle_event(event)
+                if action == "start":
+                    self.state = self.STATE_PLAYING
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.state == self.STATE_PLAYING:
                     self._handle_click(event.pos)
@@ -163,7 +172,11 @@ class Game:
     def _update(self, dt: float):
         if self.state != self.STATE_PLAYING:
             return
-
+        if self.state == self.STATE_MENU:
+            print("update menu")
+            self.menu.update()
+            return
+        
         arrived = self.knight.update(dt)
         if arrived:
             self._update_pathfinding()
@@ -193,6 +206,12 @@ class Game:
         current_id = self.knight.current_node.id
         # Identifie les nœuds qui ne sont PAS sur le chemin optimal depuis actuel
         shadow_nodes: set = set()
+
+        if self.state == self.STATE_MENU:
+            self.menu.draw(self.screen)
+            pygame.display.flip()
+            return
+        
         if (self.state == self.STATE_PLAYING and
                 len(self.optimal_path) > 1):
             next_optimal = self.optimal_path[1]

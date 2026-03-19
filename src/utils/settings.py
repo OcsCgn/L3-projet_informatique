@@ -19,6 +19,15 @@ KNIGHT_SPEED = 160   # pixels / seconde lors du déplacement
 PLAYER_MAX_ENERGY = 120
 DYNAMIC_INTERVAL = 8  # secondes entre chaque mutation du graphe
 
+#Menu settings
+MENU_WIDTH = 1000
+MENU_HEIGTH = 650
+MENU_FONT_BIG = 70
+MENU_FONT_MEDIUM = 45
+MENU_FONT_SMALL = 30
+
+
+
 # Palette de couleurs
 C_BG          = (15, 20, 40)       # fond nuit
 C_EDGE        = (80, 90, 130)      # arête normale
