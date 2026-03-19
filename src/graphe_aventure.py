@@ -42,6 +42,7 @@ class Game:
     STATE_LOSE    = "lose"
     STATE_MENU   = "menu"
 
+    player_node = None
 
     def __init__(self):
         pygame.init()
@@ -169,6 +170,7 @@ class Game:
         """Retourne le nœud sous le curseur, ou None."""
         for node in self.graph.nodes:
             if math.hypot(pos[0] - node.x, pos[1] - node.y) <= Node.RADIUS + 6:
+                self.player_node = node
                 return node
         return None
 
@@ -237,12 +239,12 @@ class Game:
 
             if on_optimal:
                 edge.draw(self.screen, st.C_EDGE_BEST, 3,
-                          self.font_tiny, alpha_overlay=False)
+                          self.font_tiny,self.knight.current_node,alpha_overlay=False)
             elif leads_bad:
                 edge.draw(self.screen, st.C_EDGE_SHADOW, 2,
-                          self.font_tiny, alpha_overlay=True)
+                          self.font_tiny,self.knight.current_node, alpha_overlay=True)
             else:
-                edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny)
+                edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny,self.knight.current_node)
 
         # ── Dessin des nœuds ──
         for node in self.graph.nodes:

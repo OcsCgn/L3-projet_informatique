@@ -93,7 +93,6 @@ class HUD:
         # ======================
         # bouton restart (droite)
         # ======================
-        #bouton restrt
 
         restart_x = st.SCREEN_W - 140
         restart_y = y - 6

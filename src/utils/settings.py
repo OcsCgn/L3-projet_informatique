@@ -20,7 +20,7 @@ PLAYER_MAX_ENERGY = 120
 DYNAMIC_INTERVAL = 8  # secondes entre chaque mutation du graphe
 
 #Menu settings
-MENU_WIDTH = 1100
+MENU_WIDTH = 1500
 MENU_HEIGTH = 750
 MENU_FONT_BIG = 70
 MENU_FONT_MEDIUM = 45
@@ -61,3 +61,9 @@ PLACE_NAMES = [
 
 # Émojis-texte pour les types de lieux (dessinés en formes géométriques)
 NODE_TYPES = ["village", "castle", "forest", "ruin", "port"]
+
+DIFFICULTY_SETTINGS = {
+    "facile": {"num_nodes": 10, "edge_dist": 300},
+    "moyen":  {"num_nodes": 15, "edge_dist": 200},
+    "difficile": {"num_nodes": 20, "edge_dist": 150}
+}
