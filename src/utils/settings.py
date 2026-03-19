@@ -5,7 +5,7 @@ import pygame
 # ─────────────────────────────────────────────
 #  CONSTANTES GLOBALES
 # ─────────────────────────────────────────────
-SCREEN_W, SCREEN_H = 1100, 750
+SCREEN_W, SCREEN_H = 1500, 750
 FPS = 60
 GRAPH_AREA = pygame.Rect(0, 0, SCREEN_W, SCREEN_H - 110)  # zone graphe
 HUD_AREA   = pygame.Rect(0, SCREEN_H - 110, SCREEN_W, 110)
