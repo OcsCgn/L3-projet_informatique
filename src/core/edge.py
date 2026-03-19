@@ -1,5 +1,5 @@
 import pygame
-import settings as st
+import utils.settings as st
 from node import Node
 import math
 

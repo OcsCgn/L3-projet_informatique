@@ -1,6 +1,6 @@
-import node as Node
-import settings as st
-import edge as Edge
+import core.node as Node
+import utils.settings as st
+import core.edge as Edge
 import pygame
 import math 
 

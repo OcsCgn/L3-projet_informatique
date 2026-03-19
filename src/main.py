@@ -3,7 +3,7 @@ import time
 from graph import Graph
 from player import Player
 from menu import Menu
-from manager_score import load_scores, add_score
+from utils.manager_score import load_scores, add_score
 
 pygame.init()
 

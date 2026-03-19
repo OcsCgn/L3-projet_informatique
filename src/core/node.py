@@ -1,5 +1,5 @@
 import pygame 
-import settings as st
+import utils.settings as st
 
 class Node:
     """Représente un nœud (lieu) du graphe."""

@@ -1,7 +1,7 @@
 import json
 import os
 
-FILE = "leaderboard.json"
+FILE = "assets/data/leaderboard.json"
 
 
 def load_scores():

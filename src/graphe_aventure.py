@@ -23,12 +23,12 @@ import math
 import heapq
 import sys
 from typing import Optional
-import settings as st
-from graph import Graph
-from knight import Knight
-from hud import HUD
-from node import Node
-from edge import Edge
+import utils.settings as st
+from core.graph import Graph
+from entities.knight import Knight
+from ui.hud import HUD
+from core.node import Node
+from core.edge import Edge
 
 class Game:
     """

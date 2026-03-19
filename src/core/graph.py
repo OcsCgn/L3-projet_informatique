@@ -2,7 +2,7 @@ from node import Node
 from edge import Edge
 
 import random
-import settings as st
+import utils.settings as st
 import math
 import heapq
 

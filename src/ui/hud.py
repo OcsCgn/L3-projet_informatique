@@ -1,6 +1,6 @@
 import pygame 
-import settings as st
-from knight import Knight
+import utils.settings as st
+from entities.knight import Knight
 
 
 class HUD:

@@ -1,5 +1,5 @@
 import pygame
-from manager_score import load_scores, add_score
+from utils.manager_score import load_scores, add_score
 
 
 class Menu:
