@@ -45,12 +45,16 @@ class Game:
 
     def __init__(self):
         pygame.init()
+
+        #Définission du menu
+        self.menu = Menu(st.MENU_WIDTH,st.MENU_HEIGTH)
+
+        #Définition de la fenêtre de jeu
         self.screen = pygame.display.set_mode((st.SCREEN_W, st.SCREEN_H))
         pygame.display.set_caption("⚔ Quête du Graphe — Chevalier & Ombre")
         self.clock = pygame.time.Clock()
 
-        #Définission du menu
-        self.menu = Menu(st.MENU_WIDTH,st.MENU_HEIGTH)
+        
    
         # Polices
         self.font_title = pygame.font.SysFont(

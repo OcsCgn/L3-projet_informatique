@@ -20,12 +20,18 @@ PLAYER_MAX_ENERGY = 120
 DYNAMIC_INTERVAL = 8  # secondes entre chaque mutation du graphe
 
 #Menu settings
-MENU_WIDTH = 1000
-MENU_HEIGTH = 650
+MENU_WIDTH = 1100
+MENU_HEIGTH = 750
 MENU_FONT_BIG = 70
 MENU_FONT_MEDIUM = 45
 MENU_FONT_SMALL = 30
 
+
+#Main states
+STATE_MENU = "menu"
+STATE_PLAYING = "playing"
+STATE_LOSE = "lose"
+STATE_WIN = "win"
 
 
 # Palette de couleurs

@@ -1,11 +1,14 @@
 import pygame
 from utils.manager_score import load_scores, add_score
 import utils.settings as st
+from tkinter import messagebox
+import tkinter as tk
 
 class Menu:
     def __init__(self, width, height):
         self.WIDTH = width
         self.HEIGHT = height
+        self.root = tk.Tk()
 
         self.left_width = int(width * 0.6)
         self.right_width = width - self.left_width
@@ -48,8 +51,6 @@ class Menu:
 
         # SCORES (JSON)
         self.scores_data = load_scores()
-        print("score" )
-        print(self.scores_data)
 
     # ======================
     # EVENTS
@@ -78,7 +79,9 @@ class Menu:
             if self.start_button.collidepoint(event.pos):
                 if self.player_name.strip():
                     return "start"
-
+                else : 
+                    self.root.withdraw()  # Cacher la fenêtre principale Tkinter
+                    messagebox.showerror("Erreur", "Veuillez entrer un nom de joueur valide !")
         return None
     # 
     # ======================
