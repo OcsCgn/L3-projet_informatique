@@ -207,3 +207,7 @@ class Menu:
                 surf = self.font_small.render(text, True, (200,200,200))
                 screen.blit(surf, (self.left_width + 40, y_offset))
                 y_offset += 50
+
+                
+    def getDifficulty(self):
+        return self.difficulty

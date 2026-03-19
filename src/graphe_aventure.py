@@ -36,7 +36,9 @@ class Game:
     STATE_PLAYING = "playing"
     STATE_WIN     = "win"
     STATE_LOSE    = "lose"
-    STATE_MENU    = "menu"
+    STATE_MENU   = "menu"
+
+    player_node = None
 
     def __init__(self):
         pygame.init()
@@ -170,6 +172,7 @@ class Game:
     def _node_at(self, pos) -> Optional[Node]:
         for node in self.graph.nodes:
             if math.hypot(pos[0] - node.x, pos[1] - node.y) <= Node.RADIUS + 6:
+                self.player_node = node
                 return node
         return None
 
@@ -208,7 +211,25 @@ class Game:
             return
 
         for edge in self.graph.edges:
-            edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny)
+            on_optimal = id(edge) in self.optimal_edges
+            # Détermine si l'arête mène vers une mauvaise direction
+            # (depuis la position actuelle du joueur)
+            leads_bad = False
+            if not self.knight.moving:
+                a_id, b_id = edge.node_a.id, edge.node_b.id
+                if a_id == current_id and b_id in shadow_nodes:
+                    leads_bad = True
+                elif b_id == current_id and a_id in shadow_nodes:
+                    leads_bad = True
+
+            if on_optimal:
+                edge.draw(self.screen, st.C_EDGE_BEST, 3,
+                          self.font_tiny,self.knight.current_node,alpha_overlay=False)
+            elif leads_bad:
+                edge.draw(self.screen, st.C_EDGE_SHADOW, 2,
+                          self.font_tiny,self.knight.current_node, alpha_overlay=True)
+            else:
+                edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny,self.knight.current_node)
 
         for node in self.graph.nodes:
             node.draw(self.screen, "default", self.font_small, self.font_tiny)
