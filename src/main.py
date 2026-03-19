@@ -1,6 +1,9 @@
 import pygame
+import time
 from graph import Graph
 from player import Player
+from menu import Menu
+from manager_score import load_scores, add_score
 
 pygame.init()
 
@@ -11,23 +14,20 @@ pygame.display.set_caption("Carte du monde – Exploration")
 clock = pygame.time.Clock()
 
 font_big = pygame.font.SysFont(None, 70)
-font_medium = pygame.font.SysFont(None, 50)
 font_small = pygame.font.SysFont(None, 35)
 
 # ======================
 # VARIABLES
 # ======================
 
-game_state = "menu"  # menu / playing / won / lost
-player_name = ""
-input_active = True
+game_state = "menu"
 
-input_box = pygame.Rect(WIDTH//2 - 150, HEIGHT//2 - 40, 300, 50)
-start_button = pygame.Rect(WIDTH//2 - 100, HEIGHT//2 + 40, 200, 50)
+menu = Menu(WIDTH, HEIGHT)
 
 restart_button = pygame.Rect(WIDTH//2 - 120, HEIGHT//2 + 40, 240, 60)
 quit_button = pygame.Rect(WIDTH//2 - 120, HEIGHT//2 + 120, 240, 60)
 
+start_time = None
 
 # ======================
 # CRÉATION DU JEU
@@ -50,9 +50,7 @@ def create_game():
     edges = [
         (1,2,10),(2,3,10),(3,4,10),(4,5,15),
         (5,11,15),(11,19,15),(19,20,20),
-
         (3,9,10),(9,10,10),(10,11,10),
-
         (2,8,40),(4,10,40),(6,12,50),(7,13,50),
         (8,9,40),(12,13,50),(9,15,60),
         (10,14,60),(11,14,50),(15,16,70),
@@ -71,7 +69,6 @@ def create_game():
 
 graph = None
 player = None
-
 running = True
 
 # ======================
@@ -85,31 +82,16 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        # ======================
-        # MENU
-        # ======================
+        # ===== MENU =====
         if game_state == "menu":
+            action = menu.handle_event(event)
 
-            if event.type == pygame.KEYDOWN and input_active:
-                if event.key == pygame.K_BACKSPACE:
-                    player_name = player_name[:-1]
-                elif event.key == pygame.K_RETURN:
-                    if player_name.strip() != "":
-                        graph, player = create_game()
-                        game_state = "playing"
-                else:
-                    if len(player_name) < 15:
-                        player_name += event.unicode
+            if action == "start":
+                graph, player = create_game()
+                start_time = time.time()
+                game_state = "playing"
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if start_button.collidepoint(event.pos):
-                    if player_name.strip() != "":
-                        graph, player = create_game()
-                        game_state = "playing"
-
-        # ======================
-        # JEU NORMAL
-        # ======================
+        # ===== JEU =====
         elif game_state == "playing":
 
             if (
@@ -138,16 +120,14 @@ while running:
                                 city
                             )
 
-        # ======================
-        # ÉCRAN FINAL
-        # ======================
+        # ===== FIN =====
         elif game_state in ["won", "lost"]:
 
             if event.type == pygame.MOUSEBUTTONDOWN:
 
                 if restart_button.collidepoint(event.pos):
-                    # On garde le nom et on relance directement
                     graph, player = create_game()
+                    start_time = time.time()
                     game_state = "playing"
 
                 if quit_button.collidepoint(event.pos):
@@ -157,7 +137,10 @@ while running:
     # UPDATE
     # ======================
 
-    if game_state == "playing":
+    if game_state == "menu":
+        menu.update()
+
+    elif game_state == "playing":
         player.update()
 
         if player.state == "idle":
@@ -167,42 +150,39 @@ while running:
             game_state = "lost"
 
         if player.current_city == 20:
+            elapsed_time = int(time.time() - start_time)
+
+            add_score(
+                menu.player_name,
+                elapsed_time,
+                menu.difficulty
+            )
+
+            menu.scores_data = load_scores()  # refresh leaderboard
+
             game_state = "won"
 
     # ======================
-    # AFFICHAGE
+    # DRAW
     # ======================
 
-    screen.fill((35, 35, 35))
-
     if game_state == "menu":
-
-        title = font_big.render("ENTREZ VOTRE NOM", True, (255,255,255))
-        screen.blit(title, (WIDTH//2 - title.get_width()//2, HEIGHT//2 - 120))
-
-        pygame.draw.rect(screen, (255,255,255), input_box, 2)
-
-        name_surface = font_medium.render(player_name, True, (255,255,255))
-        screen.blit(name_surface, (input_box.x + 10, input_box.y + 10))
-
-        pygame.draw.rect(screen, (0,150,0), start_button)
-        start_text = font_small.render("START", True, (255,255,255))
-        screen.blit(start_text,
-            (start_button.x + start_button.width//2 - start_text.get_width()//2,
-             start_button.y + 10)
-        )
+        menu.draw(screen)
 
     elif game_state == "playing":
+
+        screen.fill((35, 35, 35))
 
         graph.draw(screen)
         player.draw(screen)
         player.draw_energy_bar(screen)
 
-        # Nom au-dessus de la barre avec espace propre
-        name_text = font_small.render(player_name, True, (255,255,255))
+        name_text = font_small.render(menu.player_name, True, (255,255,255))
         screen.blit(name_text, (20, 20))
 
     elif game_state in ["won", "lost"]:
+
+        screen.fill((35, 35, 35))
 
         graph.draw(screen)
         player.draw(screen)
@@ -213,18 +193,14 @@ while running:
         overlay.fill((0,0,0))
         screen.blit(overlay, (0,0))
 
-        if game_state == "won":
-            message = "VICTOIRE !"
-            color = (0,255,0)
-        else:
-            message = "VOUS AVEZ ÉCHOUÉ"
-            color = (255,0,0)
+        message = "VICTOIRE !" if game_state == "won" else "VOUS AVEZ ÉCHOUÉ"
+        color = (0,255,0) if game_state == "won" else (255,0,0)
 
         text = font_big.render(message, True, color)
         screen.blit(text, (WIDTH//2 - text.get_width()//2, HEIGHT//2 - 120))
 
-        pygame.draw.rect(screen, (0,150,0), restart_button)
-        pygame.draw.rect(screen, (150,0,0), quit_button)
+        pygame.draw.rect(screen, (0,150,0), restart_button, border_radius=10)
+        pygame.draw.rect(screen, (150,0,0), quit_button, border_radius=10)
 
         restart_text = font_small.render("RESTART", True, (255,255,255))
         quit_text = font_small.render("QUITTER", True, (255,255,255))

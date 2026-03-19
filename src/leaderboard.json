@@ -1,0 +1,18 @@
+{
+    "facile": [
+        {"name": "Youssef", "time": 35},
+        {"name": "Sara", "time": 40},
+        {"name": "Ali", "time": 50},
+        {"name": "Lina", "time": 60},
+        {"name": "Omar", "time": 70}
+    ],
+    "moyen": [
+        {"name": "Youssef", "time": 55},
+        {"name": "Karim", "time": 65},
+        {"name": "Nadia", "time": 75}
+    ],
+    "difficile": [
+        {"name": "Expert1", "time": 90},
+        {"name": "ProPlayer", "time": 110}
+    ]
+}
