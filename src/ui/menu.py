@@ -1,6 +1,6 @@
 import pygame
 from utils.manager_score import load_scores, add_score
-
+import utils.settings as st
 
 class Menu:
     def __init__(self, width, height):
@@ -11,9 +11,9 @@ class Menu:
         self.right_width = width - self.left_width
 
         # Fonts
-        self.font_big = pygame.font.SysFont(None, 70)
-        self.font_medium = pygame.font.SysFont(None, 45)
-        self.font_small = pygame.font.SysFont(None, 30)
+        self.font_big = pygame.font.SysFont(None, st.MENU_FONT_BIG)
+        self.font_medium = pygame.font.SysFont(None, st.MENU_FONT_MEDIUM)
+        self.font_small = pygame.font.SysFont(None, st.MENU_FONT_SMALL)
 
         # INPUT
         self.player_name = ""
@@ -73,7 +73,6 @@ class Menu:
                 if rect.collidepoint(event.pos):
                     self.difficulty = diff
                     
-                    print("Difficulté choisie :", self.difficulty)
 
             # Bouton START
             if self.start_button.collidepoint(event.pos):
@@ -81,7 +80,7 @@ class Menu:
                     return "start"
 
         return None
-
+    # 
     # ======================
     # UPDATE
     # ======================
