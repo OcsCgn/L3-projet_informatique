@@ -1,5 +1,5 @@
-from node import Node
-from edge import Edge
+from core.node import Node
+from core.edge import Edge
 
 import random
 import utils.settings as st
