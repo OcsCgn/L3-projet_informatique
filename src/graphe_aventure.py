@@ -20,7 +20,6 @@
 import pygame
 import random
 import math
-import heapq
 import sys
 from typing import Optional
 import utils.settings as st
@@ -170,7 +169,6 @@ class Game:
         """Retourne le nœud sous le curseur, ou None."""
         for node in self.graph.nodes:
             if math.hypot(pos[0] - node.x, pos[1] - node.y) <= Node.RADIUS + 6:
-                self.player_node = node
                 return node
         return None
 
@@ -217,13 +215,6 @@ class Game:
             self.menu.draw(self.screen)
             pygame.display.flip()
             return
-        
-        if (self.state == self.STATE_PLAYING and
-                len(self.optimal_path) > 1):
-            next_optimal = self.optimal_path[1]
-            for nb, _ in self.graph.neighbors(self.knight.current_node):
-                if nb is not next_optimal:
-                    shadow_nodes.add(nb.id)
 
         for edge in self.graph.edges:
             on_optimal = id(edge) in self.optimal_edges
@@ -237,14 +228,7 @@ class Game:
                 elif b_id == current_id and a_id in shadow_nodes:
                     leads_bad = True
 
-            if on_optimal:
-                edge.draw(self.screen, st.C_EDGE_BEST, 3,
-                          self.font_tiny,self.knight.current_node,alpha_overlay=False)
-            elif leads_bad:
-                edge.draw(self.screen, st.C_EDGE_SHADOW, 2,
-                          self.font_tiny,self.knight.current_node, alpha_overlay=True)
-            else:
-                edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny,self.knight.current_node)
+            edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny,self.knight.current_node)
 
         # ── Dessin des nœuds ──
         for node in self.graph.nodes:

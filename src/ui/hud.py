@@ -73,7 +73,6 @@ class HUD:
         spacing = 160
 
         elements = [
-            (st.C_EDGE_BEST, "Chemin optimal"),
             (st.C_NODE_GOAL, "Objectif"),
             (st.C_NODE_PLAYER, "Vous"),
             (st.C_NODE_VISIT, "Visité"),
