@@ -29,15 +29,22 @@ from ui.hud import HUD
 from core.node import Node
 from core.edge import Edge
 from ui.menu import Menu
+from utils.timer import Timer
+from utils.manager_score import add_score
 
 class Game:
 
+    #Constant d'état du jeu
     STATE_PLAYING = "playing"
     STATE_WIN     = "win"
     STATE_LOSE    = "lose"
     STATE_MENU   = "menu"
 
-    player_node = None
+
+    #Variable 
+    player_name = ""
+    timer = Timer()
+    time_used = 0
 
     def __init__(self):
         pygame.init()
@@ -54,13 +61,18 @@ class Game:
             "segoeuisymbol,symbola,calibri,arial", 18)
         self.font_tiny  = pygame.font.SysFont(
             "segoeuisymbol,symbola,calibri,arial", 14)
+        
+        self.init_game()
 
-        self._new_game()
+    def init_game(self):
+        self.state    = self.STATE_MENU
+        self.moves    = 0
+
+
 
     def _new_game(self):
-        n = random.randint(st.NUM_NODES_MIN, st.NUM_NODES_MAX)
-        self.graph = Graph()
-        self.graph.generate(n)
+        self.graph = Graph(self.menu.getDifficulty())
+        self.graph.generate(st.DIFFICULTY_SETTINGS[self.menu.getDifficulty()]["num_nodes"])
 
         start_node = self.graph.nodes[0]
         goal_node  = max(
@@ -73,16 +85,12 @@ class Game:
         self.goal   = goal_node
 
         self._update_pathfinding()
-
         self.hud = HUD(self.font_small, self.font_tiny, self.font_title)
         self.hud.push_message(
             f"Quête : atteindre {self.goal.name} ! "
             f"(coût optimal : {self.optimal_cost})")
 
-        self.state    = self.STATE_MENU
-        self.moves    = 0
-        self.hovered  = None
-        self.dynamic_timer = st.DYNAMIC_INTERVAL
+       
 
     def _update_pathfinding(self):
         self.optimal_path = self.graph.shortest_path(
@@ -120,6 +128,9 @@ class Game:
                 action = self.menu.handle_event(event)
                 if action == "start":
                     self.state = self.STATE_PLAYING
+                    self.player_name = self.menu.getPlayerName()
+                    self._new_game()
+                    self.timer.start()
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if self.state == self.STATE_PLAYING:
@@ -142,7 +153,7 @@ class Game:
                         return
 
                     self._handle_click(event.pos)
-
+                    
                 elif self.state in (self.STATE_WIN, self.STATE_LOSE):
                     self._new_game()
 
@@ -190,6 +201,9 @@ class Game:
                 self.hud.push_message(
                     f"🏆 VICTOIRE ! Arrivé à {self.goal.name} "
                     f"en {self.moves} mouvements !")
+                self.timer.stop()
+                self.time_used = round(self.timer.get_elapsed(), 2)
+                add_score(self.player_name, self.time_used, self.menu.getDifficulty())
 
             elif self.knight.energy <= 0:
                 self.state = self.STATE_LOSE
@@ -229,7 +243,7 @@ class Game:
         self.knight.draw(self.screen)
 
         self.hud.draw(self.screen, self.knight, self.goal,
-                      self.moves, self.dynamic_timer)
+                      self.moves)
 
         if self.state in (self.STATE_WIN, self.STATE_LOSE):
             self._render_endscreen()
@@ -245,7 +259,7 @@ class Game:
 
         if self.state == self.STATE_WIN:
             color = st.C_GOLD
-            line1 = "⚔ VICTOIRE ⚔"
+            line1 = "⚔ VICTOIRE en " + str(self.time_used) + "s ! ⚔"
             line2 = f"Arrivé à {self.goal.name} en {self.moves} mouvements"
         else:
             color = (220, 60, 60)

@@ -10,14 +10,12 @@ FPS = 60
 GRAPH_AREA = pygame.Rect(0, 0, SCREEN_W, SCREEN_H - 110)  # zone graphe
 HUD_AREA   = pygame.Rect(0, SCREEN_H - 110, SCREEN_W, 110)
 
-NUM_NODES_MIN, NUM_NODES_MAX = 10, 15
 MARGIN = 90          # marge par rapport aux bords pour placer les nœuds
 MIN_DIST = 130       # distance minimale entre deux nœuds
 EDGE_EXTRA = 2       # arêtes supplémentaires ajoutées au MST pour créer des cycles
 WEIGHT_MIN, WEIGHT_MAX = 5, 20   # coût des arêtes
 KNIGHT_SPEED = 160   # pixels / seconde lors du déplacement
 PLAYER_MAX_ENERGY = 120
-DYNAMIC_INTERVAL = 8  # secondes entre chaque mutation du graphe
 
 #Menu settings
 MENU_WIDTH = 1500
@@ -26,6 +24,13 @@ MENU_FONT_BIG = 70
 MENU_FONT_MEDIUM = 45
 MENU_FONT_SMALL = 30
 
+
+#Nombre de noeuds selon la difficulté
+DIFFICULTY_SETTINGS = {
+    "facile": {"num_nodes": 20, "edge_dist": 300},
+    "moyen":  {"num_nodes": 28, "edge_dist": 200},
+    "difficile": {"num_nodes": 35, "edge_dist": 150}
+}
 
 #Main states
 STATE_MENU = "menu"
@@ -56,11 +61,8 @@ C_GOLD        = (255, 200, 50)
 PLACE_NAMES = [
     "Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
     "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
-    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch","Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
-    "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
-    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch","Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
-    "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
-    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch","Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
+    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch",
+    "Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
     "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
     "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch",
 ]

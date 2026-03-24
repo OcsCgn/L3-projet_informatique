@@ -50,13 +50,16 @@ class Menu:
         self.cursor_timer = 0
 
         # SCORES (JSON)
-        self.scores_data = load_scores()
+
 
     # ======================
     # EVENTS
     # ======================
 
     def handle_event(self, event):
+
+        self.scores_data = load_scores()
+
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_BACKSPACE:
                 self.player_name = self.player_name[:-1]
@@ -211,3 +214,6 @@ class Menu:
                 
     def getDifficulty(self):
         return self.difficulty
+    
+    def getPlayerName(self):
+        return self.player_name

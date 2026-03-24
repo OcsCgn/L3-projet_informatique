@@ -24,7 +24,6 @@ class Node:
         """
         Dessine le nœud avec son icône et son nom.
         state : 'default' | 'hover' | 'player' | 'goal' | 'visited'
-        shadow : superpose un voile sombre "mauvaise voie"
         """
         color = {
             "default": st.C_NODE_DEF,

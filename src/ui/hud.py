@@ -25,7 +25,7 @@ class HUD:
         self.messages = [[t, d - dt] for t, d in self.messages if d - dt > 0]
 
     def draw(self, surface: pygame.Surface, knight: Knight,
-             goal_node, moves: int, dynamic_timer: float):
+             goal_node, moves: int):
         """Dessine le HUD en bas de l'écran."""
 
         # ======================

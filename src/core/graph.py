@@ -14,10 +14,13 @@ class Graph:
            mutations dynamiques (ajout/suppression d'arête).
     """
 
-    def __init__(self):
+    def __init__(self,difficulty):
         self.nodes: list[Node] = []
         self.edges: list[Edge] = []
         self._adj: dict[int, list[Edge]] = {}   # liste d'adjacence id → [Edge]
+
+        self.difficulty = difficulty
+        print("Difficulty set to:", self.difficulty)
 
     # ─── Génération ─────────────────────────────
     def generate(self, n_nodes: int):

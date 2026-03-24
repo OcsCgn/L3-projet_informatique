@@ -28,10 +28,7 @@ class Edge:
         """Dessine l'arête et affiche son poids."""
         a, b = self.node_a.pos, self.node_b.pos
         pygame.draw.line(surface, color, a, b, width)
-
-        print(self.node_a)
-        print(self.node_b)
-        print(player_node)
+        
         # Poids au milieu pour seulement le point de départ et les points visités
         if self.node_a is player_node or self.node_b is player_node or self.node_a.visited or self.node_b.visited:
             mid = self.midpoint()
@@ -39,21 +36,3 @@ class Edge:
             bg_rect = w_surf.get_rect(center=mid).inflate(6, 2)
             pygame.draw.rect(surface, st.C_BG, bg_rect, border_radius=3)
             surface.blit(w_surf, w_surf.get_rect(center=mid))
-
-
-
-
-       
-
-        # Voile sombre sur l'arête (mauvaise voie)
-        '''if alpha_overlay:
-            length = math.hypot(b[0] - a[0], b[1] - a[1])
-            if length < 1:
-                return
-            overlay = pygame.Surface((int(length) + 4, 14), pygame.SRCALPHA)
-            overlay.fill((0, 0, 0, 160))
-            angle = math.degrees(math.atan2(b[1] - a[1], b[0] - a[0]))
-            rotated = pygame.transform.rotate(overlay, -angle)
-            cx = (a[0] + b[0]) // 2
-            cy = (a[1] + b[1]) // 2
-            surface.blit(rotated, rotated.get_rect(center=(cx, cy)))'''
