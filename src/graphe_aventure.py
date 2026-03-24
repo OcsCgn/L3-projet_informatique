@@ -209,29 +209,57 @@ class Game:
             return
 
         for edge in self.graph.edges:
-            on_optimal = id(edge) in self.optimal_edges
-            # Détermine si l'arête mène vers une mauvaise direction
-            # (depuis la position actuelle du joueur)
-            leads_bad = False
-            if not self.knight.moving:
-                a_id, b_id = edge.node_a.id, edge.node_b.id
-                if a_id == current_id and b_id in shadow_nodes:
-                    leads_bad = True
-                elif b_id == current_id and a_id in shadow_nodes:
-                    leads_bad = True
-
             edge.draw(self.screen, st.C_EDGE, 2, self.font_tiny,self.knight.current_node)
 
         for node in self.graph.nodes:
-            node.draw(self.screen, "default", self.font_small, self.font_tiny)
+            if node is self.knight.current_node:
+                state = "player"
+            elif node is self.goal:
+                state = "goal"
+            elif node is self.hovered:
+                state = "hover"
+            elif node.visited:
+                state = "visited"
+            else:
+                state = "default"
+
+            node.draw(self.screen, state,
+                      self.font_small, self.font_tiny, shadow=None)
 
         self.knight.draw(self.screen)
 
         self.hud.draw(self.screen, self.knight, self.goal,
                       self.moves, self.dynamic_timer)
 
+        if self.state in (self.STATE_WIN, self.STATE_LOSE):
+            self._render_endscreen()
+
         pygame.display.flip()
 
+
+    def _render_endscreen(self):
+        """Overlay de fin de partie."""
+        overlay = pygame.Surface((st.SCREEN_W, st.SCREEN_H), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 160))
+        self.screen.blit(overlay, (0, 0))
+
+        if self.state == self.STATE_WIN:
+            color = st.C_GOLD
+            line1 = "⚔ VICTOIRE ⚔"
+            line2 = f"Arrivé à {self.goal.name} en {self.moves} mouvements"
+        else:
+            color = (220, 60, 60)
+            line1 = "💀 DÉFAITE 💀"
+            line2 = "L'énergie du chevalier est épuisée"
+
+        t1 = self.font_title.render(line1, True, color)
+        t2 = self.font_small.render(line2, True, st.C_TEXT)
+        t3 = self.font_small.render("Clic ou R pour rejouer", True, (160, 160, 200))
+        cx = st.SCREEN_W // 2
+        cy = st.SCREEN_H // 2 - 40
+        self.screen.blit(t1, t1.get_rect(center=(cx, cy)))
+        self.screen.blit(t2, t2.get_rect(center=(cx, cy + 50)))
+        self.screen.blit(t3, t3.get_rect(center=(cx, cy + 90)))
 
 if __name__ == "__main__":
     game = Game()

@@ -51,13 +51,3 @@ class Node:
             midtop=(self.x, self.y + self.RADIUS + 4))
         surface.blit(name_surf, name_rect)
 
-        # Overlay sombre si mauvaise voie
-        if shadow:
-            shadow_surf = pygame.Surface(
-                (self.RADIUS * 2 + 4, self.RADIUS * 2 + 4), pygame.SRCALPHA)
-            pygame.draw.circle(shadow_surf, (0, 0, 0, 190),
-                               (self.RADIUS + 2, self.RADIUS + 2),
-                               self.RADIUS + 2)
-            surface.blit(shadow_surf,
-                         (self.x - self.RADIUS - 2, self.y - self.RADIUS - 2))
-

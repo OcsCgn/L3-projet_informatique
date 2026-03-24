@@ -56,6 +56,12 @@ C_GOLD        = (255, 200, 50)
 PLACE_NAMES = [
     "Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
     "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
+    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch","Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
+    "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
+    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch","Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
+    "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
+    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch","Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
+    "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
     "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch",
 ]
 
