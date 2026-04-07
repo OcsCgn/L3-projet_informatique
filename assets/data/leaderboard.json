@@ -1,48 +1,38 @@
 {
-    "facile": [
-        {
-            "name": "yooooo",
-            "time": 5.94
-        },
-        {
-            "name": "osca",
-            "time": 7.540086599998176
-        },
-        {
-            "name": "osc",
-            "time": 9.45
-        },
-        {
-            "name": "ooo",
-            "time": 12.13319429999683
-        },
-        {
-            "name": "Youssef",
-            "time": 35
-        }
-    ],
-    "moyen": [
-        {
-            "name": "Youssef",
-            "time": 55
-        },
-        {
-            "name": "Karim",
-            "time": 65
-        },
-        {
-            "name": "Nadia",
-            "time": 75
-        }
-    ],
-    "difficile": [
-        {
-            "name": "Expert1",
-            "time": 90
-        },
-        {
-            "name": "ProPlayer",
-            "time": 110
-        }
-    ]
+    "facile": {
+        "time": [],
+        "energy": []
+    },
+    "moyen": {
+        "time": [
+            {
+                "name": "oscar1",
+                "time": 15.91,
+                "energy": 91
+            }
+        ],
+        "energy": [
+            {
+                "name": "oscar1",
+                "time": 15.91,
+                "energy": 91
+            }
+        ]
+    },
+    "difficile": {
+        "time": [
+            {
+                "name": "patrick",
+                "time": 38.29,
+                "energy": 33
+            }
+        ],
+        "energy": [
+            {
+                "name": "patrick",
+                "time": 38.29,
+                "energy": 33
+            }
+        ]
+    }
 }

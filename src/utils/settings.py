@@ -5,17 +5,17 @@ import pygame
 # ─────────────────────────────────────────────
 #  CONSTANTES GLOBALES
 # ─────────────────────────────────────────────
-SCREEN_W, SCREEN_H = 1500, 750
+SCREEN_W, SCREEN_H = 1500, 700
 FPS = 60
-GRAPH_AREA = pygame.Rect(0, 0, SCREEN_W, SCREEN_H - 110)  # zone graphe
+GRAPH_AREA = pygame.Rect(0, 0, SCREEN_W, SCREEN_H - 90)  # zone graphe
 HUD_AREA   = pygame.Rect(0, SCREEN_H - 110, SCREEN_W, 110)
 
-MARGIN = 90          # marge par rapport aux bords pour placer les nœuds
-MIN_DIST = 130       # distance minimale entre deux nœuds
+MARGIN = 40          # marge par rapport aux bords pour placer les nœuds
+MIN_DIST = 140       # distance minimale entre deux nœuds
 EDGE_EXTRA = 2       # arêtes supplémentaires ajoutées au MST pour créer des cycles
 WEIGHT_MIN, WEIGHT_MAX = 5, 20   # coût des arêtes
 KNIGHT_SPEED = 160   # pixels / seconde lors du déplacement
-PLAYER_MAX_ENERGY = 120
+PLAYER_MAX_ENERGY = 200
 
 #Menu settings
 MENU_WIDTH = 1500
@@ -24,13 +24,35 @@ MENU_FONT_BIG = 70
 MENU_FONT_MEDIUM = 45
 MENU_FONT_SMALL = 30
 
-
-#Nombre de noeuds selon la difficulté
 DIFFICULTY_SETTINGS = {
-    "facile": {"num_nodes": 20, "edge_dist": 300},
-    "moyen":  {"num_nodes": 28, "edge_dist": 200},
-    "difficile": {"num_nodes": 35, "edge_dist": 150}
+    "facile": {
+        "num_nodes": 20, 
+        "difficulty_percent": 10, 
+        "edge_dist": 400,
+        "energy_margin": 1.8,
+        "heal_percent": 0.25 
+    },
+    "moyen": {
+        "num_nodes": 25, 
+        "difficulty_percent": 10, # 35% de routes en plus
+        "edge_dist": 350,
+        "energy_margin": 1.3,
+        "heal_percent": 0.15
+    },
+    "difficile": {
+        "num_nodes": 35, 
+        "difficulty_percent": 10, 
+        "edge_dist": 280,
+        "energy_margin": 1.05,
+        "heal_percent": 0.05          
+    }
 }
+HINTS_PAR_DIFFICULTE = {
+    "facile":    2, # Je te conseille 3 pour facile, 1 c'est trop peu !
+    "moyen":     1,
+    "difficile": 1,
+}
+
 
 #Main states
 STATE_MENU = "menu"
@@ -62,16 +84,11 @@ PLACE_NAMES = [
     "Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
     "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
     "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch",
-    "Aelindra", "Brumebois", "Castelmor", "Drakenfels", "Elfheim",
-    "Frostpeak", "Grimhold", "Harvenfall", "Irongate", "Jadewood",
-    "Keldorn", "Lunaris", "Mirefall", "Northpass", "Oldwatch",
+    "Port-Sable", "Quartzhelm", "Rive-Argent", "Sombre-Val", "Tour-Cristal",
+    "Uldar-Garde", "Val-Serein", "Wildrun", "Xylos", "Yew-Hollow",
+    "Zénith", "Ambre-Lumière", "Bas-Fond", "Ciel-D'Orage", "Dague-Fidèle",
+    "Épine-Verte", "Forge-Fer", "Grise-Mine", "Haute-Pierre", "Île-Perdue",
+    "Jardin-Noble", "Khazad-Bourg", "Louve-Garde", "Mont-Vigile", "Nid-Du-Faucon"
 ]
-
 # Émojis-texte pour les types de lieux (dessinés en formes géométriques)
 NODE_TYPES = ["village", "castle", "forest", "ruin", "port"]
-
-DIFFICULTY_SETTINGS = {
-    "facile": {"num_nodes": 10, "edge_dist": 300},
-    "moyen":  {"num_nodes": 15, "edge_dist": 200},
-    "difficile": {"num_nodes": 20, "edge_dist": 150}
-}

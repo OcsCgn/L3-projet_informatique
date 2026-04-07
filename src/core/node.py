@@ -12,7 +12,8 @@ class Node:
         self.y = y
         self.name = name
         self.node_type = node_type
-        self.visited = False        # le chevalier y est déjà passé
+        self.visited = False
+        self.healed = False 
 
     @property
     def pos(self) -> tuple:
@@ -36,6 +37,9 @@ class Node:
         # Cercle principal
         pygame.draw.circle(surface, color, self.pos, self.RADIUS)
         pygame.draw.circle(surface, st.C_WHITE, self.pos, self.RADIUS, 2)
+
+        if self.node_type == "village" and not self.healed:
+            pygame.draw.circle(surface, st.C_ENERGY_OK, self.pos, self.RADIUS + 4, 3)
 
         # Icône selon le type
         icon = {"village": "⌂", "castle": "♜", "forest": "♣",

@@ -20,64 +20,117 @@ class Graph:
         self._adj: dict[int, list[Edge]] = {}   # liste d'adjacence id → [Edge]
 
         self.difficulty = difficulty
-        print("Difficulty set to:", self.difficulty)
+        
 
     # ─── Génération ─────────────────────────────
     def generate(self, n_nodes: int):
-        """Génère un graphe connexe aléatoire avec n_nodes nœuds."""
+        """
+        Génère un graphe connexe intelligent :
+        - Poids logiques (distance + terrain).
+        - Arbre couvrant pour la connexité.
+        - Ajout de routes limitées par la distance pour éviter les croisements visuels.
+        """
         self.nodes.clear()
         self.edges.clear()
         self._adj.clear()
 
-        names = random.sample(st.PLACE_NAMES, n_nodes)
-        types = [random.choice(st.NODE_TYPES) for _ in range(n_nodes)]
+        # --- 1. PLACEMENT DES NŒUDS ---
+        names = random.sample(st.PLACE_NAMES, min(n_nodes, len(st.PLACE_NAMES)))
+        nb_villages = random.randint(1, 2) 
+        types = ["village"] * nb_villages
+        
+        autres_types = [t for t in st.NODE_TYPES if t != "village"]
+        for _ in range(n_nodes - nb_villages):
+            types.append(random.choice(autres_types))
+        random.shuffle(types)
 
-        # Placement aléatoire avec distance minimale
         positions = []
         attempts = 0
         while len(positions) < n_nodes and attempts < 10000:
             attempts += 1
             x = random.randint(st.MARGIN, st.GRAPH_AREA.width - st.MARGIN)
             y = random.randint(st.MARGIN, st.GRAPH_AREA.height - st.MARGIN)
-            if all(math.hypot(x - px, y - py) >= st.MIN_DIST
-                   for px, py in positions):
+            if all(math.hypot(x - px, y - py) >= st.MIN_DIST for px, py in positions):
                 positions.append((x, y))
 
+        positions.sort(key=lambda p: p[0], reverse=True)
+        
         for i, (x, y) in enumerate(positions):
             node = Node(i, x, y, names[i], types[i])
             self.nodes.append(node)
             self._adj[i] = []
+        n_nodes = len(self.nodes)
+        # --- 2. FONCTION DE COÛT LOGIQUE ---
+        def calculer_poids(n1: Node, n2: Node) -> int:
+            """Calcule un coût d'énergie basé sur la distance et le terrain."""
+            dist = math.hypot(n1.x - n2.x, n1.y - n2.y)
+            multiplicateur = 1.0
+            
 
-        # Arbre couvrant minimal (Prim simplifié) pour garantir la connexité
+            punition_terrain = {
+                "facile": 1.2,    # Coûte un peu plus cher
+                "moyen": 1.5,     # Coûte 50% plus cher
+                "difficile": 2.5  # Coûte extrêmement cher !
+            }[self.difficulty]
+
+
+            # Modificateurs de terrain (les ruines et forêts fatiguent plus)
+            terrains_difficiles = ["ruin", "forest", "castle"]
+            if n1.node_type in terrains_difficiles or n2.node_type in terrains_difficiles:
+                multiplicateur = punition_terrain  
+            if n1.node_type == "village" and n2.node_type == "village":
+                multiplicateur = 0.8  
+                
+            return max(1, int((dist / 10) * multiplicateur))
+
+        # --- 3. SQUELETTE DE CONNEXITÉ (Arbre de Prim) ---
         in_tree = {0}
         while len(in_tree) < n_nodes:
-            best = None
+            candidates = []
             for u in in_tree:
                 for v in range(n_nodes):
                     if v not in in_tree:
                         d = math.hypot(
                             self.nodes[u].x - self.nodes[v].x,
                             self.nodes[u].y - self.nodes[v].y)
-                        if best is None or d < best[0]:
-                            best = (d, u, v)
-            if best:
-                _, u, v = best
-                w = random.randint(st.WEIGHT_MIN, st.WEIGHT_MAX)
-                self._add_edge(u, v, w)
-                in_tree.add(v)
+                        candidates.append((d, u, v))
+            
+            # On trie par distance pour éviter les traits absurdes qui traversent l'écran
+            candidates.sort(key=lambda x: x[0])
+            
+            top_k = min(10, len(candidates)) 
+            _, u, v = random.choice(candidates[:top_k])
+            
+            w = calculer_poids(self.nodes[u], self.nodes[v])
+            self._add_edge(u, v, w)
+            in_tree.add(v)
 
-        # Arêtes supplémentaires pour créer des cycles
-        all_pairs = [(i, j) for i in range(n_nodes)
-                     for j in range(i + 1, n_nodes)
-                     if not self._connected(i, j)]
-        random.shuffle(all_pairs)
-        added = 0
-        for i, j in all_pairs:
-            if added >= st.EDGE_EXTRA + random.randint(0, 3):
-                break
-            w = random.randint(st.WEIGHT_MIN, st.WEIGHT_MAX)
-            self._add_edge(i, j, w)
-            added += 1
+        # --- 4. AJOUT DES ROUTES SECONDAIRES (Gérées par la difficulté) ---
+        MAX_EDGE_LENGTH = st.DIFFICULTY_SETTINGS[self.difficulty]["edge_dist"]
+        potential_edges = []
+        
+        for i in range(n_nodes):
+            for j in range(i + 1, n_nodes):
+                if not self._connected(i, j):
+                    n1, n2 = self.nodes[i], self.nodes[j]
+                    dist = math.hypot(n1.x - n2.x, n1.y - n2.y)
+                    
+                    if dist <= MAX_EDGE_LENGTH:
+                        w = calculer_poids(n1, n2)
+                        potential_edges.append((w, n1, n2))
+
+        # On calcule le nombre de routes à ajouter
+        pourcentage = st.DIFFICULTY_SETTINGS[self.difficulty]["difficulty_percent"]
+        nb_to_add = int(len(potential_edges) * pourcentage)
+        
+        # LE CHANGEMENT EST ICI : On mélange TOUTES les routes possibles au lieu de trier.
+        # Ça va créer de vrais cycles et des raccourcis inattendus.
+        random.shuffle(potential_edges)
+        
+        # On ajoute les routes
+        for k in range(min(nb_to_add, len(potential_edges))):
+            w, n1, n2 = potential_edges[k]
+            self._add_edge(n1.id, n2.id, w)
 
     def _add_edge(self, i: int, j: int, w: int):
         edge = Edge(self.nodes[i], self.nodes[j], w)
@@ -86,7 +139,6 @@ class Graph:
         self._adj[j].append(edge)
 
     def _connected(self, i: int, j: int) -> bool:
-        """Vérifie si une arête directe existe déjà entre i et j."""
         return any(
             (e.node_a.id == i and e.node_b.id == j) or
             (e.node_a.id == j and e.node_b.id == i)
@@ -100,7 +152,6 @@ class Graph:
             result.append((edge.other(node), edge))
         return result
 
-    # ─── Dijkstra ───────────────────────────────
     def dijkstra(self, start: Node, goal: Node) -> tuple:
         """
         Algorithme de Dijkstra.

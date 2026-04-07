@@ -18,6 +18,8 @@ class HUD:
         #bouton restart
         self.restart_button = pygame.Rect(0, 0, 110, 30)
 
+        self.menu_btn = pygame.Rect(0, 0, 150, 30)
+
     def push_message(self, text: str):
         self.messages.append([text, self.MSG_DURATION])
 
@@ -39,7 +41,7 @@ class HUD:
         # energie (gauche)
         # ======================
         bar_x, bar_y = 20, st.HUD_AREA.top + 15
-        bar_w, bar_h = 260, 22
+        bar_w, bar_h = 260, 27
 
         ratio = max(0, knight.energy / knight.max_energy)
         fill_color = st.C_ENERGY_OK if ratio > 0.35 else st.C_ENERGY_LOW
@@ -93,8 +95,8 @@ class HUD:
         # bouton restart (droite)
         # ======================
 
-        restart_x = st.SCREEN_W - 140
-        restart_y = y - 6
+        restart_x = st.SCREEN_W - 150
+        restart_y = y - 20
 
         self.restart_button.topleft = (restart_x, restart_y)
 
@@ -111,6 +113,29 @@ class HUD:
         surface.blit(txt,
             (self.restart_button.x + self.restart_button.width//2 - txt.get_width()//2,
              self.restart_button.y + 6)
+        )
+
+
+        #Bouton pour retourner au menu
+
+        menu_x = st.SCREEN_W - 310
+        menu_y = y - 20
+
+        self.menu_btn.topleft = (menu_x, menu_y)
+
+        mouse_pos = pygame.mouse.get_pos()
+
+        if self.menu_btn.collidepoint(mouse_pos):
+            btn_color = (220, 60, 60)
+        else:
+            btn_color = (180, 40, 40)
+
+        pygame.draw.rect(surface, btn_color, self.menu_btn, border_radius=6)
+
+        txt = self.font_tiny.render("Retour au menu", True, st.C_WHITE)
+        surface.blit(txt,
+            (self.menu_btn.x + self.menu_btn.width//2 - txt.get_width()//2,
+             self.menu_btn.y + 6)
         )
 
         # ======================
