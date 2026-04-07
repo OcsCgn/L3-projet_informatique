@@ -11,7 +11,7 @@ GRAPH_AREA = pygame.Rect(0, 0, SCREEN_W, SCREEN_H - 90)  # zone graphe
 HUD_AREA   = pygame.Rect(0, SCREEN_H - 110, SCREEN_W, 110)
 
 MARGIN = 40          # marge par rapport aux bords pour placer les nœuds
-MIN_DIST = 140       # distance minimale entre deux nœuds
+MIN_DIST = 110       # distance minimale entre deux nœuds
 EDGE_EXTRA = 2       # arêtes supplémentaires ajoutées au MST pour créer des cycles
 WEIGHT_MIN, WEIGHT_MAX = 5, 20   # coût des arêtes
 KNIGHT_SPEED = 160   # pixels / seconde lors du déplacement
@@ -40,8 +40,8 @@ DIFFICULTY_SETTINGS = {
         "heal_percent": 0.15
     },
     "difficile": {
-        "num_nodes": 35, 
-        "difficulty_percent": 10, 
+        "num_nodes": 37, 
+        "difficulty_percent": 100, 
         "edge_dist": 280,
         "energy_margin": 1.05,
         "heal_percent": 0.05          

@@ -22,7 +22,6 @@ class Game:
     STATE_LOSE    = "lose"
     STATE_MENU   = "menu"
 
-
     #Variable 
     player_name = ""
     timer = Timer()
@@ -52,7 +51,6 @@ class Game:
     def init_game(self):
         self.state    = self.STATE_MENU
         self.moves    = 0
-
 
 
     def _new_game(self):
@@ -87,11 +85,12 @@ class Game:
             f"(coût optimal : {self.optimal_cost})")
         
         self.moves        = 0
-        self.hint_edges   = set() # Stocke les arêtes à colorer en doré
-        self.hint_timer   = 0     # Chrono de l'indice
+        self.hint_edges   = set() 
+        self.hint_timer   = 0  
 
-        # ── Création du bouton ──
-        difficulte  = self.menu.getDifficulty()
+        self.timer.stop()
+        self.timer.reset()
+
         btn_w, btn_h = 160, 32
         self.hint_button = Button(
             x=st.SCREEN_W - btn_w - 10,
@@ -136,8 +135,8 @@ class Game:
                         self.restart()
                         self.state = self.STATE_PLAYING
                     else:
-                        # Sinon (Victoire, Menu), on retourne à l'accueil complet
                         self.state = self.STATE_MENU
+                        
                         self._new_game()
 
             if self.state == self.STATE_MENU:
@@ -166,13 +165,11 @@ class Game:
                     self.state = self.STATE_MENU
                     self._new_game()
                 elif self.state == self.STATE_LOSE:
-                    self.restart()  # <-- On restart la map ici
+                    self.restart() 
                     self.state = self.STATE_PLAYING
 
-            # ── Bouton indice ──────────────────────────────────
             if self.state == self.STATE_PLAYING:
                 if self.hint_button.handle_event(event):
-                    # --- LOGIQUE DE L'INDICE ---
                     half = (len(self.optimal_path) + 1) // 2
                     prev = self.knight.current_node
                     
@@ -182,7 +179,7 @@ class Game:
                                 self.hint_edges.add(id(edge))
                         prev = node
                         
-                    self.hint_timer = 5 # L'indice reste affiché 5 secondes
+                    self.hint_timer = 5 
                     
                     restants = self.hint_button.hints_left
                     self.hud.push_message(f"💡 50% du chemin révélé ! ({restants} restant{'s' if restants > 1 else ''})")
@@ -199,16 +196,6 @@ class Game:
             if neighbor is clicked:
                 self.knight.move_to(clicked, edge)
                 self.moves += 1
-
-                if (len(self.optimal_path) > 1 and
-                        clicked is not self.optimal_path[1]):
-                    self.hud.push_message(
-                        f"⚠ Mauvaise piste ! Ombre sur {clicked.name}…")
-                else:
-                    self.hud.push_message(
-                        f"✓ Bonne direction vers {clicked.name} !")
-                return
-
     def _node_at(self, pos) -> Optional[Node]:
         for node in self.graph.nodes:
             if math.hypot(pos[0] - node.x, pos[1] - node.y) <= Node.RADIUS + 6:
@@ -302,6 +289,19 @@ class Game:
         
         if self.state == self.STATE_PLAYING:
             self.hint_button.draw(self.screen)
+
+            temps_ecoule = self.timer.get_elapsed()
+            texte_timer = f"⏳ Temps : {temps_ecoule:.1f}s"
+            surf_timer = self.font_small.render(texte_timer, True, st.C_WHITE)
+            
+            # On crée un petit fond semi-transparent pour garantir la lisibilité
+            rect_timer = surf_timer.get_rect(topright=(st.SCREEN_W - 10, 20))
+            bg_timer = rect_timer.inflate(20, 10) # Ajoute un peu de marge autour du texte
+            
+            pygame.draw.rect(self.screen, st.C_HUD_BG, bg_timer, border_radius=8)
+            pygame.draw.rect(self.screen, st.C_EDGE, bg_timer, 2, border_radius=8) # Petite bordure
+            
+            self.screen.blit(surf_timer, rect_timer)
 
         if self.state in (self.STATE_WIN, self.STATE_LOSE):
             self._render_endscreen()

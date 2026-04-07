@@ -122,9 +122,7 @@ class Graph:
         # On calcule le nombre de routes à ajouter
         pourcentage = st.DIFFICULTY_SETTINGS[self.difficulty]["difficulty_percent"]
         nb_to_add = int(len(potential_edges) * pourcentage)
-        
-        # LE CHANGEMENT EST ICI : On mélange TOUTES les routes possibles au lieu de trier.
-        # Ça va créer de vrais cycles et des raccourcis inattendus.
+
         random.shuffle(potential_edges)
         
         # On ajoute les routes
@@ -153,12 +151,7 @@ class Graph:
         return result
 
     def dijkstra(self, start: Node, goal: Node) -> tuple:
-        """
-        Algorithme de Dijkstra.
-        Retourne (dist, previous) :
-          dist     : dict id → coût minimal depuis start
-          previous : dict id → id du prédécesseur sur le chemin optimal
-        """
+
         dist = {n.id: float('inf') for n in self.nodes}
         prev = {n.id: None for n in self.nodes}
         dist[start.id] = 0

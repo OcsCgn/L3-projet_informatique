@@ -1,7 +1,19 @@
 {
     "facile": {
-        "time": [],
-        "energy": []
+        "time": [
+            {
+                "name": "xx",
+                "time": 25.53,
+                "energy": 213
+            }
+        ],
+        "energy": [
+            {
+                "name": "xx",
+                "time": 25.53,
+                "energy": 213
+            }
+        ]
     },
     "moyen": {
         "time": [
@@ -9,6 +21,11 @@
                 "name": "oscar1",
                 "time": 15.91,
                 "energy": 91
+            },
+            {
+                "name": "roger",
+                "time": 58.65,
+                "energy": 17
             }
         ],
         "energy": [
@@ -16,11 +33,21 @@
                 "name": "oscar1",
                 "time": 15.91,
                 "energy": 91
+            },
+            {
+                "name": "roger",
+                "time": 58.65,
+                "energy": 17
             }
         ]
     },
     "difficile": {
         "time": [
+            {
+                "name": "dominique",
+                "time": 26.88,
+                "energy": 15
+            },
             {
                 "name": "patrick",
                 "time": 38.29,
@@ -32,6 +59,11 @@
                 "name": "patrick",
                 "time": 38.29,
                 "energy": 33
+            },
+            {
+                "name": "dominique",
+                "time": 26.88,
+                "energy": 15
             }
         ]
     }
